@@ -5,16 +5,21 @@ import numpy as np
 
 # Step 1: Load the retriever models and tokenizers
 logging.set_verbosity_error()
+device = torch.device('cuda' if torch.cuda.is_available() else 'mps' if torch.backends.mps.is_available() else 'cpu')
+
 print("Loading the retriever models...")
 question_tokenizer = DPRContextEncoderTokenizer.from_pretrained("facebook/dpr-question_encoder-single-nq-base")
-question_encoder = DPRQuestionEncoder.from_pretrained("facebook/dpr-question_encoder-single-nq-base")
+question_encoder = DPRQuestionEncoder.from_pretrained("facebook/dpr-question_encoder-single-nq-base").to(device)
 context_tokenizer = DPRContextEncoderTokenizer.from_pretrained("facebook/dpr-ctx_encoder-single-nq-base")
-context_encoder = DPRContextEncoder.from_pretrained("facebook/dpr-ctx_encoder-single-nq-base")
+context_encoder = DPRContextEncoder.from_pretrained("facebook/dpr-ctx_encoder-single-nq-base").to(device)
 
 # Step 2: Load the generator model and tokenizer
 print("Loading the generator model...")
 generator_tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-3.2-1B-Instruct")
-generator_model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-3.2-1B-Instruct")
+generator_model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-3.2-1B-Instruct").to(device)
+
+# Add padding token if not present
+generator_tokenizer.pad_token = generator_tokenizer.eos_token
 
 # Step 3: Create a document store (in a real RAG system, this might be a database or a more sophisticated retrieval system)
 documents = [
@@ -22,58 +27,77 @@ documents = [
 ]
 
 # Step 4: Encode documents with context encoder
+print("Encoding documents...")
 def encode_documents(documents):
-    doc_embeddings = []
-    for doc in documents:
-        inputs = context_tokenizer(doc, return_tensors="pt")
-        with torch.no_grad():
-            embedding = context_encoder(**inputs).pooler_output
-        doc_embeddings.append(embedding)
-    return torch.cat(doc_embeddings, dim=0)
+    inputs = context_tokenizer(documents, return_tensors="pt", padding=True, truncation=True).to(device)
+    with torch.no_grad():
+        embeddings = context_encoder(**inputs).pooler_output
+    return embeddings
 
 document_embeddings = encode_documents(documents)
 
 # Step 5: Define a function to retrieve relevant documents based on input questions
-def retrieve_relevant_documents(question, top_k=1):
+def retrieve_relevant_documents(question, top_k=3, threshold=0.8):
     # Encode the question
-    inputs = question_tokenizer(question, return_tensors="pt")
+    inputs = question_tokenizer(question, return_tensors="pt").to(device)
     with torch.no_grad():
         question_embedding = question_encoder(**inputs).pooler_output
-    
+
     # Compute similarity scores
-    similarities = cosine_similarity(question_embedding.numpy(), document_embeddings.numpy())
+    similarities = cosine_similarity(question_embedding.cpu().numpy(), document_embeddings.cpu().numpy())
     relevant_indices = np.argsort(similarities[0])[::-1][:top_k]
-    return [documents[i] for i in relevant_indices]
+
+    # Filter documents by relevance threshold
+    filtered_docs = [
+        documents[i] for i in relevant_indices if similarities[0][i] >= threshold
+    ]
+    return filtered_docs
 
 def main(inp):
     # Step 6: Define the RAG pipeline
-    # print("Input your question:")
     question = inp
 
     # Retrieve relevant documents
-    retrieved_docs = retrieve_relevant_documents(question, top_k=1)
+    retrieved_docs = retrieve_relevant_documents(question, top_k=3, threshold=0.8)
     retrieved_context = " ".join(retrieved_docs)
 
     # Generate response based on the retrieved context and question
-    prompt = f"\nQuestion: {question}\nAnswer:"
-    inputs = generator_tokenizer(prompt, return_tensors="pt")
+    prompt = f"{retrieved_context}\n\nThe following is an answer to the given question based on the provided context.\nQuestion: {question}\nAnswer:"
+    inputs = generator_tokenizer(prompt, return_tensors="pt", truncation=True, max_length=512, padding='max_length').to(device)
 
-    with torch.no_grad():
-        outputs = generator_model.generate(**inputs, max_length=50, num_return_sequences=1, do_sample=True, top_p=0.9, temperature=0.3)
+    try:
+        with torch.no_grad():
+            outputs = generator_model.generate(
+                **inputs,
+                max_new_tokens=150,  # Increased max_new_tokens to prevent cutoff
+                num_return_sequences=1,  # Generate one response
+                do_sample=True,
+                top_p=0.9,
+                temperature=0.3
+            )
+    except Exception as e:
+        print(f"Error generating response: {e}")
+        return "Error generating response"
 
-    # Decode and print the response
+    # Decode the response
     response = generator_tokenizer.decode(outputs[0], skip_special_tokens=True)
-    # print(response)
     return response
 
-
+# Step 7: Read questions from file and generate answers
+print("Processing riddles...")
 with open("riddles.txt", "r") as f:
     count = 0
-    for line in f.readlines():
+    for line in f:
         if count > 5:
             break
-        q, a = line.split("<SPLIT>")
-        print("=====================================================\n")
-        print(f"{main(q)}\n >> Correct Answer:{a}")
-        count += 1
-        
+        if "<SPLIT>" in line:
+            q, a = line.split("<SPLIT>")
+            generated_answer = main(q.strip())
+            print("=====================================================")
+            print(f"Generated Answer: {generated_answer}\nCorrect Answer: {a.strip()}\n")
+            count += 1
+        else:
+            print("Line missing <SPLIT> delimiter, skipping.")
+
+# Clear cache to manage GPU memory
+torch.cuda.empty_cache()
