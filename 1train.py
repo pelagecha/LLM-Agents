@@ -54,7 +54,7 @@ def retrieve_relevant_documents(query, documents, embeddings, vectorizer):
 
 # Prompt
 def format_prompt(context, question):
-    return f"""You are an AI assistant. Given the context below, provide a detailed yet concise answer to the question. Use clear and informative language.
+    return f"""You are an AI assistant. Given the context below, provide a detailed yet concise answer to the question. Use clear and informative language. Don't include figures. Be concise.
 
 Context:
 {context}
@@ -93,7 +93,7 @@ class LlamaChain:
         inputs = self.tokenizer(full_prompt, return_tensors="pt")
 
         # Generate response
-        output = self.llm.generate(**inputs, max_length=1000, num_return_sequences=1)
+        output = self.llm.generate(**inputs, max_length=output_start_index+100, num_return_sequences=1)
         response = self.tokenizer.decode(output[0], skip_special_tokens=True)[output_start_index:]
 
         return response
