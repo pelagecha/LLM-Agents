@@ -5,6 +5,8 @@ import torch
 print("Loading the model...")
 tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-3.2-1B-Instruct")
 model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-3.2-1B-Instruct")
+device = torch.device("cuda") if torch.cuda.is_available() else torch.device("mps") if torch.backends.mps.is_available() else torch.device("cpu")
+print(f"Using {device}")
 
 # Define the prompt
 print("Input your prompt:")

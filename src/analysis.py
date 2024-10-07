@@ -12,10 +12,12 @@ from .configs import ConfigLoader
 from .utils import ColorMessage
 
 MODEL_MAP = {
+    "rag": "rag",
     "gpt-4": "gpt-4",
     "gpt-3.5-turbo-0125": "gpt-3.5-turbo",
     "llama-2-13b": "llama2-13b",
     "llama-2-7b": "llama2-7b",
+    "llama-3-1b": "llama-3-1b",
     "chatglm-6b": "chatglm-6b",
     "wizard-30b": "wizardlm-30b",
     "vicuna-33b": "vicuna-33b",
