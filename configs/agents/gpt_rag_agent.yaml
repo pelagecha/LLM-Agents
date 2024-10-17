@@ -7,7 +7,7 @@
 module: "src.client.agents.GptRAGAgent" # Path to your custom agent class
 parameters:
     name: "GptRAGAgent"
-    body:
-        model: "gpt-4" # Use the correct model name
-        # max_tokens: 512
+    # body:
+    # model: "gpt-3.5-turbo" # Use the correct model name
+    # max_tokens: 512
 # src/client/agents/gpt_rag_agent.py
