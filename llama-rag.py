@@ -4,6 +4,14 @@ import bs4
 import numpy as np
 import torch
 from dotenv import load_dotenv
+load_dotenv()  # Load and set the environment variables from the .env file
+# Set environment variables
+os.environ['USER_AGENT']           = os.getenv('USER_AGENT')
+os.environ['LANGCHAIN_TRACING_V2'] = os.getenv('LANGCHAIN_TRACING_V2')
+os.environ['LANGCHAIN_ENDPOINT']   = os.getenv('LANGCHAIN_ENDPOINT')
+os.environ['LANGCHAIN_API_KEY']    = os.getenv('LANGCHAIN_API_KEY')
+os.environ['LANGCHAIN_PROJECT']    = os.getenv('LANGCHAIN_PROJECT')
+
 from langchain import hub
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import WebBaseLoader
@@ -14,14 +22,9 @@ from sklearn.metrics.pairwise import cosine_similarity
 from typing import List, Callable
 from langchain.schema import Document  # Ensure you have the correct import
 
-load_dotenv()  # Load and set the environment variables from the .env file
 
-# Set environment variables
-os.environ['USER_AGENT']           = os.getenv('USER_AGENT')
-os.environ['LANGCHAIN_TRACING_V2'] = os.getenv('LANGCHAIN_TRACING_V2')
-os.environ['LANGCHAIN_ENDPOINT']   = os.getenv('LANGCHAIN_ENDPOINT')
-os.environ['LANGCHAIN_API_KEY']    = os.getenv('LANGCHAIN_API_KEY')
-os.environ['LANGCHAIN_PROJECT']    = os.getenv('LANGCHAIN_PROJECT')
+
+
 
 # =========================== DEVICE SETUP =========================== #
 # Determine the device
@@ -183,7 +186,7 @@ def main():
     texts = [doc.page_content for doc in splits]  # Corrected attribute access
     embedder.fit_transform(texts)
 
-    # Initialize Language Model
+    # Initialize Language Model for local Llama
     llm = LanguageModel(model_name="meta-llama/Llama-3.2-1B-Instruct", device=device)
 
     # Define Retriever with Multi-Query Capability
@@ -198,7 +201,6 @@ def main():
 
     # Question
     question = "What is Task Decomposition?"
-    # question = "What did Davinci do?"
     response = rag_chain.invoke(question)
     print("Response:")
     print(response)

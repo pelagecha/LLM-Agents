@@ -9,6 +9,14 @@ import:
     - card_game.yaml
     - kg.yaml
     - os.yaml
-    - ltp.yaml # Ensure this line is present
+    - ltp.yaml
+    - gpt_rag_agent.yaml
     - alfworld.yaml
     - avalon.yaml
+
+# Example of a specific task using the RAG agent
+rag_task:
+    module: src.server.tasks.your_task_module # Replace with your actual task module
+    parameters:
+        agent: gpt_rag_agent # Use the rag defined in the agent configuration
+        other_parameter: value # Add other parameters as needed

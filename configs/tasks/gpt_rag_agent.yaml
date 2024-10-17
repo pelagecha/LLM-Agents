@@ -1,0 +1,13 @@
+# module: "src.agents.GptRAGAgent" # The path to your custom agent class
+# parameters:
+#     name: "GptRAGAgent" # Name of the agent
+#     # key1: value1 # Any specific parameters you want to pass to the agent constructor
+#     # key2: value2 # Any other parameters needed by the RAGAgent
+
+module: "src.client.agents.GptRAGAgent" # Path to your custom agent class
+parameters:
+    name: "GptRAGAgent"
+    body:
+        model: "gpt-4" # Use the correct model name
+        # max_tokens: 512
+# src/client/agents/gpt_rag_agent.py

@@ -1,7 +1,7 @@
-torch~=1.9.0
-scikit-learn~=0.24.2
+# torch~=1.9.0
+# scikit-learn~=0.24.2
 beautifulsoup4~=4.9.3
-numpy~=1.23.5
+# numpy~=1.23.5
 pydantic~=1.10.12
 requests~=2.28.1
 tqdm~=4.65.0
@@ -19,3 +19,12 @@ anthropic~=0.4.1
 fschat~=0.2.31
 accelerate~=0.23.0
 transformers~=4.34.0
+openai
+dataclass_wizard
+python-dotenv
+langchain_community 
+tiktoken 
+langchain-openai 
+langchainhub 
+chromadb 
+langchain

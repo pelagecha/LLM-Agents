@@ -4,12 +4,18 @@ from src.configs import ConfigLoader
 from src.typings import InstanceFactory
 from .agent import AgentClient
 
-
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', type=str, default='configs/agents/api_agents.yaml')
-    parser.add_argument('--agent', type=str, default='gpt-3.5-turbo-0125')
+    parser.add_argument('--agent', type=str, default='gpt_rag_agent')  # Updated to gpt_rag_agent
     return parser.parse_args()
+
+# def parse_args():
+#     parser = argparse.ArgumentParser()
+#     parser.add_argument('--config', type=str, default='configs/agents/api_agents.yaml')
+#     # parser.add_argument('--agent', type=str, default='gpt-3.5-turbo-0125')
+#     parser.add_argument('--agent', type=str, default='rag')
+#     return parser.parse_args()
 
 
 def interaction(agent: AgentClient):

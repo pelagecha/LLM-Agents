@@ -4,12 +4,29 @@ concurrency:
     task:
         avalon-dev-single: 3
     agent:
-        gpt-3.5-turbo-0125: 3
+        gpt_rag_agent: 10
+        # gpt-3.5-turbo-0125: 3
 
 assignments: # List[Assignment] | Assignment
-    - agent: # "task": List[str] | str ,  "agent": List[str] | str
-          - gpt-3.5-turbo-0125
+    - agent: gpt_rag_agent
       task:
           - avalon-dev-single
 
 output: "outputs/{TIMESTAMP}"
+# import: definition.yaml
+
+# concurrency:
+#     task:
+#         avalon-dev-single: 3
+#     agent:
+#         gpt_rag_agent: 1
+#         # gpt-3.5-turbo-0125: 3
+
+# assignments: # List[Assignment] | Assignment
+#     - agent: # "task": List[str] | str ,  "agent": List[str] | str
+#           - gpt_rag_agent
+#           #   - gpt-3.5-turbo-0125
+#       task:
+#           - avalon-dev-single
+
+# output: "outputs/{TIMESTAMP}"

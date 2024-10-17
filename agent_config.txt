@@ -1,0 +1,3 @@
+
+=================================================
+To use a RAG agent that is defined locally within the rag.py file with the v0.2 version of AgentBench, you would need to follow the instructions provided in the documentation or tutorial of AgentBench for version v0.2. This may involve importing the rag.py file into your project, initializing the RAG agent, and calling its functions as needed within your codebase. Make sure to refer to the specific documentation or tutorial for the v0.2 version of AgentBench for detailed instructions on how to use a locally defined RAG agent.

@@ -1,3 +1,31 @@
+# LLM-Agents
+
+Creating advanced Large Language Model agents under the supervision of **Prof. Long Tran-Thanh**.
+
+## Setup Instructions
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/pelagecha/LLM-Agents
+cd LLM-Agents
+```
+
+### 2. Create Conda Environment (Optional)
+
+```bash
+conda create --name llm python=3.9
+conda activate llm
+```
+
+### 3. Install Dependencies
+
+```bash
+python3 -m pip install -r requirements.txt
+```
+
+This installs packages like **torch** and **transformers** for deep learning and NLP.
+
 # AgentBench
 
 ![](./assets/cover.jpg)
@@ -33,8 +61,7 @@ Clone this repo and install the dependencies.
 
 ```bash
 cd AgentBench
-conda create -n agent-bench python=3.9
-conda activate agent-bench
+conda activate llm
 pip install -r requirements.txt
 ```
 
@@ -118,31 +145,3 @@ launching:
 | ltp       | ~5s            | < 500M             |
 | os        | ~5s            | < 500M             |
 | kg        | ~5s            | < 500M             |
-
-# LLM-Agents
-
-Creating advanced Large Language Model agents under the supervision of **Prof. Long Tran-Thanh**.
-
-## Setup Instructions
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/pelagecha/LLM-Agents
-cd LLM-Agents
-```
-
-### 2. Create Conda Environment (Optional)
-
-```bash
-conda create --name llm python=3.11
-conda activate llm
-```
-
-### 3. Install Dependencies
-
-```bash
-python3 -m pip install -r requirements.txt
-```
-
-This installs packages like **torch** and **transformers** for deep learning and NLP.

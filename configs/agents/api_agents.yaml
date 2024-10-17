@@ -22,7 +22,11 @@ gpt-3.5-turbo-0125:
             model: "gpt-3.5-turbo-0125"
             max_tokens: 512
 
-
-rag:
-    import: ""
+gpt_rag_agent:
+    import: "./gpt_rag_agent.yaml"
+    parameters:
+        name: "GptRAGAgent" # Ensure this matches the class name in your agent implementation
+        body:
+            model: "gpt_rag_agent"
+            # max_tokens: 512
 # python -m src.client.agent_test --config configs/agents/api_agents.yaml --agent gpt-3.5-turbo-0125

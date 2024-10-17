@@ -386,7 +386,8 @@ class LateralThinkingPuzzle(Task):
             self.targets.append(answer)
         self.eval_yaml = eval_yaml
         self.eval_agent: AgentClient = InstanceFactory.parse_obj(
-            ConfigLoader().load_from(self.eval_yaml)["gpt-3.5-turbo-0125"]
+            # ConfigLoader().load_from(self.eval_yaml)["gpt-3.5-turbo-0125"]
+            ConfigLoader().load_from(self.eval_yaml)["rag"]
         ).create()
         super().__init__(**configs)
 

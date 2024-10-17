@@ -13,6 +13,7 @@ from .utils import ColorMessage
 
 MODEL_MAP = {
     "rag": "rag",
+    "gpt_rag_agent": "gpt_rag_agent",
     "gpt-4": "gpt-4",
     "gpt-3.5-turbo-0125": "gpt-3.5-turbo",
     "llama-2-13b": "llama2-13b",
@@ -82,6 +83,10 @@ def analyze_output(config: str, output: str, since_timestamp: float):
             + "\n"
         )
     )
+
+    print("Loaded Configuration:", config)
+    print("Available Agents:", agents)
+    print("Available Tasks:", tasks)
 
     overall_dict = OrderedDict()  # agent -> task -> {file: str, time: float}
     for root, dirs, files in os.walk(output):
